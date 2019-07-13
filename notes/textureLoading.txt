@@ -1,0 +1,4 @@
+Loading a texture onto the screen:
+1. Give library a file path, which will give us a pointer to an array of pixels
+2. Take pixel array, upload it to the GPU through OpenGL as a texture
+3. Modify our shader to read our texture and work out which pixels should be which color
