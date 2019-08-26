@@ -69,20 +69,22 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)OpenGL\src\vendor\assimp\lib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>src/vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenGL\src\vendor\assimp\include;$(SolutionDir)OpenGL\src\vendor;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);GLEW_STATIC;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)OpenGL\src\vendor\assimp\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;assimp-vc140-mt.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,7 +134,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
@@ -150,6 +155,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Lamp.shader" />
+    <None Include="res\shaders\Lighting.shader" />
+    <None Include="src\vendor\assimp\assimp-vc140-mt.dll" />
+    <None Include="src\vendor\assimp\assimp-vc140-mt.lib" />
+    <None Include="src\vendor\assimp\include\assimp\color4.inl" />
+    <None Include="src\vendor\assimp\include\assimp\material.inl" />
+    <None Include="src\vendor\assimp\include\assimp\matrix3x3.inl" />
+    <None Include="src\vendor\assimp\include\assimp\matrix4x4.inl" />
+    <None Include="src\vendor\assimp\include\assimp\quaternion.inl" />
+    <None Include="src\vendor\assimp\include\assimp\vector2.inl" />
+    <None Include="src\vendor\assimp\include\assimp\vector3.inl" />
+    <None Include="src\vendor\assimp\lib\assimp-vc140-mt.dll" />
+    <None Include="src\vendor\assimp\lib\assimp-vc140-mt.lib" />
+    <None Include="src\vendor\assimp\lib\assimp-vc140-mt.exp" />
+    <None Include="src\vendor\assimp\lib\assimp-vc140-mt.ilk" />
+    <None Include="src\vendor\assimp\lib\assimp-vc140-mt.pdb" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -284,10 +305,54 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\ai_assert.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\anim.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\camera.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\cexport.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\cfileio.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\cimport.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\color4.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Compiler\pstdint.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\config.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\DefaultIOStream.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\DefaultIOSystem.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Defines.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\defs.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Exporter.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Importer.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\importerdesc.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\IOStream.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\IOSystem.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\light.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\Logger.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\LogStream.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\material.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\matrix3x3.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\matrix4x4.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\mesh.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\metadata.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\NullLogger.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\postprocess.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\quaternion.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\scene.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\SceneCombiner.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\texture.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\types.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\vector2.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\vector3.h" />
+    <ClInclude Include="src\vendor\assimp\include\assimp\version.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -545,6 +610,8 @@
   <ItemGroup>
     <Image Include="res\images\Rings.png" />
     <Image Include="res\images\starlight.png" />
+  </ItemGroup>
+  <ItemGroup>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

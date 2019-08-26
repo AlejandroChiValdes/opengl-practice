@@ -1,2 +1,3 @@
 ﻿  Application.cpp
+D:\engine_dev\graphics\OpenGL\OpenGL\src\Application.cpp(40,13): warning C4244:  'return': conversion from 'double' to 'float', possible loss of data
   OpenGL.vcxproj -> D:\engine_dev\graphics\OpenGL\Debug\OpenGL.exe

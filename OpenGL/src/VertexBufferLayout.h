@@ -69,4 +69,6 @@ public:
 	inline const std::vector<LayoutElement>& GetElements() const { return m_Elements; }
 
 	inline unsigned int GetStride() const { return m_Stride; }
+
+	void AddToStride(unsigned int newStride) { m_Stride += newStride; }
 };
