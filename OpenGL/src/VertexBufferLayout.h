@@ -36,7 +36,32 @@ public:
 	VertexBufferLayout()
 		: m_Stride(0)
 	{}
-	
+
+	// Decouple AttribPtr and Stride by extracting AddAttribPtr
+	// from the Push function
+	template<typename T>
+	void AddAttribPtr(unsigned int count)
+	{
+		static_assert(false);
+	}
+
+	template<>
+	void AddAttribPtr<float>(unsigned int count)
+	{
+		m_Elements.push_back({ GL_FLOAT, count, GL_FALSE });
+	}
+
+	template<>
+	void AddAttribPtr<unsigned int>(unsigned int count)
+	{
+		m_Elements.push_back({ GL_UNSIGNED_INT, count, GL_FALSE });
+	}
+
+	template<>
+	void AddAttribPtr<unsigned char>(unsigned int count)
+	{
+		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_FALSE });
+	}
 
 	template<typename T>
 	void Push(unsigned int count)
@@ -47,14 +72,14 @@ public:
 	template<>
 	void Push<float>(unsigned int count)
 	{
-		m_Elements.push_back({ GL_FLOAT, count, GL_FALSE });
+		AddAttribPtr<float>(count);
 		m_Stride += LayoutElement::GetSizeOfType(GL_FLOAT) * count;
 	}
 
 	template<>
 	void Push<unsigned int>(unsigned int count)
 	{
-		m_Elements.push_back({ GL_UNSIGNED_INT, count, GL_FALSE });
+		AddAttribPtr<unsigned int>(count);
 		m_Stride += LayoutElement::GetSizeOfType(GL_UNSIGNED_INT) * count;
 	}
 
@@ -62,7 +87,7 @@ public:
 	void Push<unsigned char>(unsigned int count)
 	{
 		// why are char elements normalize while the other types aren't?
-		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
+		AddAttribPtr<unsigned char>(count);
 		m_Stride += LayoutElement::GetSizeOfType(GL_UNSIGNED_BYTE) * count;
 	}
 

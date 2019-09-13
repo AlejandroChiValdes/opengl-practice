@@ -1,3 +1,4 @@
 ﻿  Application.cpp
-D:\engine_dev\graphics\OpenGL\OpenGL\src\Application.cpp(40,13): warning C4244:  'return': conversion from 'double' to 'float', possible loss of data
-  OpenGL.vcxproj -> D:\engine_dev\graphics\OpenGL\Debug\OpenGL.exe
+C:\opengl-practice\OpenGL\src\Model\ShapeLoader.h(17): warning C4091: 'static ': ignored on left of 'ShapeLoader::ShapeType' when no variable is declared
+C:\opengl-practice\OpenGL\src\Application.cpp(34): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  OpenGL.vcxproj -> C:\opengl-practice\Debug\OpenGL.exe

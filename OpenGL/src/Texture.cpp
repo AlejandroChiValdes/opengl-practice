@@ -9,6 +9,7 @@ Texture::Texture(const std::string& filePath, const std::string& textureType)
 	// in reality it starts at the top left. This fn call will fix this issue.
 	stbi_set_flip_vertically_on_load(1);
 	int width, height, bytesPerPixel;
+	std::cout << "Path: " << path.c_str() << std::endl;
 	unsigned char* localBuffer = stbi_load(path.c_str(), &width, &height, &bytesPerPixel, 4);
 	if (localBuffer)
 	{
@@ -29,7 +30,7 @@ Texture::Texture(const std::string& filePath, const std::string& textureType)
 	}
 	else
 	{
-		std::cout << "Texture::Texture -- Failed to load texture data." << std::endl;
+		std::cout << "Texture::Texture -- Failed to load texture data for file " << filePath << std::endl;
 	}
 
 	stbi_image_free(localBuffer);

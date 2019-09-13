@@ -20,13 +20,13 @@ bool GLLogError(const char* function, const char* file, int line)
 	return success;
 }
 
-void Renderer::Clear() const
+void Renderer::Clear()
 {
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 	// Clear the depth buffer from previous frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void Renderer::Draw(const VertexArray& va, unsigned int numIndices, const IndexBuffer& ib, const Shader& shader) const
+void Renderer::Draw(const VertexArray& va, unsigned int numIndices, const IndexBuffer& ib, const Shader& shader)
 {
 	shader.Bind();
 	va.Bind();

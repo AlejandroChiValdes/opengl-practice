@@ -15,7 +15,10 @@ out vec4 vertexPosition;
 void main()
 {
 	gl_Position = projection * view * model * vec4(aPosition, 1.0);
-	Normal = aNormal;
+	// Multiply our normal vector by the normal matrix. If someone non-uniformly scales an object,
+	// the normal matrix will properly adjust the normal vector so that it remains perpendicular to
+	// the surface
+	Normal = mat3( transpose( inverse( model ) ) ) * aNormal;
 	vec4 worldPos = model * vec4(aPosition, 1.0);
 	vertexPosition = worldPos;
 }
@@ -29,6 +32,7 @@ uniform vec4 u_Color;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform vec3 lightPos;
+uniform vec3 viewPos;
 
 in vec3 Normal;
 in vec4 vertexPosition;
@@ -43,5 +47,11 @@ void main()
 	vec3 lightRay = normalize(lightPos - vertexPosition.xyz);
 	float diffuseStrength = max(0.0, dot(norm, lightRay));
 	vec3 diffuseColor = lightColor * diffuseStrength;
-	color = vec4( (diffuseColor + ambientColor) * objectColor, 1.0);
+
+	float specularCoeff = 0.5;
+	vec3 viewDir = normalize(viewPos - vertexPosition.xyz);
+	vec3 reflectDir = reflect(-lightRay, norm);
+	float specularStrength = pow(max(dot(reflectDir, viewDir), 0.0), 128);
+	vec3 specularColor = specularCoeff * specularStrength * lightColor;
+	color = vec4( (diffuseColor + ambientColor + specularColor) * objectColor, 1.0);
 }

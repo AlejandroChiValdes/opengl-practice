@@ -1,25 +1,26 @@
-#include "Model.h"
+#include "MeshModel.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <iostream>
 #include "GL/glew.h"
 #include "stb_image/stb_image.h"
+#include <memory>
 
-Model::Model(const char* path)
+MeshModel::MeshModel(const char* path)
 {
 	loadModel(path);
 }
-//
-void Model::Draw(Shader& shader)
+
+void MeshModel::Draw(Shader& shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); ++i)
 	{
-		meshes[i].Draw(shader);
+		meshes[i]->Draw(shader);
 	}
 }
-//
-void Model::loadModel(std::string path)
+
+void MeshModel::loadModel(std::string path)
 {
 	// Importer is an interface to the Assimp functionality
 	//! @todo: Make an importer singleton object to avoid constructing this object every time we want to load a model.
@@ -39,11 +40,13 @@ void Model::loadModel(std::string path)
 	processNode(scene->mRootNode, scene);
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void MeshModel::processNode(aiNode* node, const aiScene* scene)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 	{
-		meshes.push_back(processMesh(scene->mMeshes[node->mMeshes[i]], scene));
+		//std::cout << "Processing mesh number " << i << std::endl;
+		std::shared_ptr<Mesh> newMesh(processMesh(scene->mMeshes[node->mMeshes[i]], scene));
+		meshes.push_back(newMesh);
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 	{
@@ -54,7 +57,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 // Consolidate assimp's vertex data (positions, normals, texCoords, indices) into our own Vertex objects
 // and retrieve the mesh's texture data as well.
 // @return a mesh object containing the consolidated vertex information
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+std::shared_ptr<Mesh> MeshModel::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -97,10 +100,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	}
-	return Mesh(vertices, indices, textures);
+	std::shared_ptr<Mesh> newMesh(new Mesh(vertices, indices, textures));
+	return newMesh;
 }
 //
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+std::vector<Texture> MeshModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
@@ -108,6 +112,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 		// Holds the path of the current texture to load.
 		aiString str;
 		mat->GetTexture(type, i, &str);
+		std::cout << "texture path: " << str.C_Str() << std::endl;
 		bool skip = false;
 		if (textures_loaded.find(str.C_Str()) != textures_loaded.end())
 		{

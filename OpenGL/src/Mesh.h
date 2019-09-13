@@ -4,26 +4,33 @@
 #include <vector>
 #include "Shader.h"
 #include "Texture.h"
+#include "Vertex.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "IndexBuffer.h"
 
-struct Vertex
-{
-	glm::vec3 Position;
-	glm::vec3 Normal;
-	glm::vec2 TexCoords;
-};
 
 class Mesh
 {
 public:
-	std::vector<Vertex> Vertices;
-	std::vector<unsigned int> Indices;
-	std::vector<Texture> Textures;
+
 
 	Mesh(std::vector<Vertex> v, std::vector<unsigned int> i, std::vector<Texture> t);
 	void Draw(Shader& shader);
 
 private:
-	unsigned int VAO, VBO, EBO;
+	Mesh(const Mesh& lhs);
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<Texture> textures;
+
+	VertexArray vao;
+	VertexBuffer vbo;
+	VertexBufferLayout layout;
+	IndexBuffer ibo;
 
 	void SetupMesh();
+
+	void Unbind();
 };

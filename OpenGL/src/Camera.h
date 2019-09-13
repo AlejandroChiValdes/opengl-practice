@@ -9,7 +9,6 @@
 class Camera
 {
 private: 
-	glm::vec3 cameraPos;
 	glm::vec3 viewTarget;
 	glm::vec3 upVector;
 	float lastMouseX;
@@ -22,6 +21,9 @@ private:
 	static GLFWwindow* window;
 	float deltaTime;
 	float lastFrame;
+
+public:
+	glm::vec3 cameraPos;
 
 public:
 
